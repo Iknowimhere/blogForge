@@ -1,12 +1,10 @@
 import User from '../models/User.js';
 import generateToken from '../utils/generateToken.js';
+import asyncHandler from 'express-async-handler';
 
 
-export const register = async (req, res, next) => {
-    try{
+export const register =asyncHandler( async (req, res, next) => {
     let { username, email, password, confirmPassword } = req.body;
-    console.log(req.file);
-    
         //verify user is in db already
         let existingUser=await User.findOne({email})
         if(existingUser){
@@ -25,16 +23,10 @@ export const register = async (req, res, next) => {
         let token=await generateToken(newUser._id);
         //sending response
         res.status(201).json({newUser,token});
-    }catch(err){
-        console.log(err);
-        
-        next(err)
-    }
-}
+})
 
-export const login = async (req, res, next) => {
+export const login = asyncHandler(async (req, res, next) => {
     let {  email, password} = req.body;
-    try{
         //verify user is in db already
         let existingUser=await User.findOne({email})
         if(!existingUser){
@@ -49,7 +41,10 @@ export const login = async (req, res, next) => {
         let token=await generateToken(existingUser._id)
         //sending response
         res.status(201).json({existingUser,token});
-    }catch(err){
-        next(err)
-    }
-}
+})
+
+export const updateProfile=asyncHandler(async(req,res,next)=>{
+    let {id}=req.params;
+    await User.findByIdAndUpdate(id,{photo:req.file?.path},{new:true})
+    res.sendStatus(201)
+})

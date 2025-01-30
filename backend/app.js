@@ -6,7 +6,7 @@ let app=express();
 
 app.use(express.json())
 
-app.use("api/users",userRoutes);
+app.use("/api/user",userRoutes);
 
 //global error handler
 app.use((err,req,res,next)=>{
