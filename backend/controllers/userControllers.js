@@ -59,7 +59,7 @@ export const forgortPassword=asyncHandler(async(req,res,next)=>{
         throw new Error("User doesn't exist")
     }
     let resetPasswordToken=crypto.randomBytes(32).toString('hex')
-    let resetPasswordTokenExpiresAt= Date.now()+ 60*60*1000 ;
+    let resetPasswordTokenExpiresAt= Date.now()+ 15*60*1000;
 
 
     exisitingUser.resetPasswordToken=resetPasswordToken;
@@ -68,7 +68,7 @@ export const forgortPassword=asyncHandler(async(req,res,next)=>{
     //save to db
     await exisitingUser.save({validateBeforeSave:false});
     
-    let resetPasswordLink= `${req.protocol}://${req.hostname}:5001/reset-password/:${resetPasswordToken}`
+    let resetPasswordLink= `${req.protocol}://${req.hostname}:5000/api/user/reset-password/${resetPasswordToken}`
     let options={
         subject:"Reset your password",
         to:exisitingUser.email,
@@ -144,5 +144,20 @@ export const forgortPassword=asyncHandler(async(req,res,next)=>{
 })
 
 export const resetPassword=asyncHandler(async(req,res,next)=>{
+    let {token}=req.params;
+    let {password,confirmPassword}=req.body;
 
+    let user=await User.findOne({
+        resetPasswordToken:token,
+        resetPasswordTokenExpiresAt:{$gt:Date.now()}
+    })
+    if(!user){
+        throw new Error("Token expired")
+    }
+    user.password=password;
+    user.confirmPassword=confirmPassword;
+    user.resetPasswordToken=undefined;
+    user.resetPasswordTokenExpiresAt=undefined;
+    await user.save({validateBeforeSave:false})
+    res.send("Password reset successfully!!")
 }) 
