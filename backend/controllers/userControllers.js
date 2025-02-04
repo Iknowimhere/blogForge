@@ -159,5 +159,5 @@ export const resetPassword=asyncHandler(async(req,res,next)=>{
     user.resetPasswordToken=undefined;
     user.resetPasswordTokenExpiresAt=undefined;
     await user.save({validateBeforeSave:false})
-    res.send("Password reset successfully!!")
+    res.status(200).send("Password reset successfully!!")
 }) 
