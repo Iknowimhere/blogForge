@@ -1,12 +1,14 @@
 import express from 'express';
 import db from './config/db.js';
 import userRoutes from './routes/userRoutes.js'
+import blogRoutes from "./routes/blogRoutes.js"
 db();
 let app=express();
 
 app.use(express.json())
 
 app.use("/api/user",userRoutes);
+app.use("/api/blog",blogRoutes);
 
 //global error handler
 app.use((err,req,res,next)=>{

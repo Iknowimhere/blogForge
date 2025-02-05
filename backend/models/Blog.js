@@ -9,7 +9,6 @@ const blogSchema=new Schema({
     slug:{
         type:String,
         unique:true,
-        required:true
     },
     content:{
         type:String,
@@ -18,24 +17,21 @@ const blogSchema=new Schema({
     author:{
         type:Schema.Types.ObjectId,
         ref:"User",
-        required:true
+        // required:true
     },
     categories:{
-        type:[{type:String,ref:"Category"}],
+        type:[{type:Schema.Types.ObjectId,ref:"Category"}],
         required:true
     },
     featuredImage:{
         type:String,
-        required:true
     },
     views:{
         type:Number,
         default:0
     },
     likes:{
-        type:Schema.Types.ObjectId,
-        ref:"Like",
-        default:0
+        type:[{type:Schema.Types.ObjectId,ref:"Like"}],
     },
     comments:{
         type:Schema.Types.ObjectId,
@@ -45,8 +41,17 @@ const blogSchema=new Schema({
     timestamps:true
 })
 
-const Blog=model("Blog",blogSchema);
+blogSchema.pre("save",function(next){
+    this.slug= this.title
+    .toLowerCase() // Convert to lowercase
+    .trim() // Remove leading/trailing spaces
+    .replace(/\s+/g, "-") // Replace spaces with hyphens
+    .replace(/[^\w\-]+/g, ""); // Remove non-alphanumeric characters except hyphens
+    next()
+})
 
+
+const Blog=model("Blog",blogSchema);
 
 export default Blog;
 
@@ -56,11 +61,3 @@ export default Blog;
 
 
 
-
-function convertToSlug() {
-    this.slug= this.title
-      .toLowerCase() // Convert to lowercase
-      .trim() // Remove leading/trailing spaces
-      .replace(/\s+/g, "-") // Replace spaces with hyphens
-      .replace(/[^\w\-]+/g, ""); // Remove non-alphanumeric characters except hyphens
-  }

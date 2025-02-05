@@ -13,8 +13,3 @@ export const auth=asyncHandler(async (req,res,next)=>{
         next()
 })
 
-// module.exports = (func) => {
-//     return (req, res, next) => {
-//       func(req, res, next).catch((err) => next(err));
-//     };
-//   };

@@ -11,10 +11,10 @@ let router = express.Router();
 router.post("/register", upload.single("photo"), register);
 router.post("/login", login);
 
-router.patch("/profile/:id",upload.single("photo"),updateProfile);
+router.patch("/profile/:id",auth,upload.single("photo"),updateProfile);
 
-router.post("/forgot-password",forgortPassword)
-router.post("/reset-password/:token",resetPassword)
+router.post("/forgot-password",auth,forgortPassword)
+router.post("/reset-password/:token",auth,resetPassword)
 
 
 export default router;
