@@ -1,6 +1,5 @@
 import {Schema,model} from 'mongoose'
 
-
 const blogSchema=new Schema({
     title:{
         type:String,
@@ -22,7 +21,7 @@ const blogSchema=new Schema({
         required:true
     },
     categories:{
-        type:[String],
+        type:[{type:String,ref:"Category"}],
         required:true
     },
     featuredImage:{
@@ -34,13 +33,16 @@ const blogSchema=new Schema({
         default:0
     },
     likes:{
-        type:Number,
+        type:Schema.Types.ObjectId,
+        ref:"Like",
         default:0
     },
     comments:{
         type:Schema.Types.ObjectId,
         ref:"Comment"
     }
+},{
+    timestamps:true
 })
 
 const Blog=model("Blog",blogSchema);
