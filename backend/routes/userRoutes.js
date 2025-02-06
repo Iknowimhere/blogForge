@@ -10,11 +10,16 @@ let router = express.Router();
 
 router.post("/register", upload.single("photo"), register);
 router.post("/login", login);
+router.post("/forgot-password",forgortPassword)
+router.post("/reset-password/:token",resetPassword)
+
 
 router.patch("/profile/:id",auth,upload.single("photo"),updateProfile);
 
-router.post("/forgot-password",auth,forgortPassword)
-router.post("/reset-password/:token",auth,resetPassword)
+//admin
+
+//get all users
+//delete users
 
 
 export default router;

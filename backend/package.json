@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "app.js",
   "scripts": {
-    "start": "node server.js",
+    "start": "set NODE_ENV=production && node --env-file=.env server.js",
     "dev": "nodemon --env-file=.env server.js"
   },
   "keywords": [],
