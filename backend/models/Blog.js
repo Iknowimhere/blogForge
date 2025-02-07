@@ -20,7 +20,39 @@ const blogSchema=new Schema({
         // required:true
     },
     categories:{
-        type:[{type:Schema.Types.ObjectId,ref:"Category"}],
+        type:String,
+        enum:[
+            'Technology',
+            'Health & Fitness',
+            'Lifestyle',
+            'Travel',
+            'Food & Drink',
+            'Business & Finance',
+            'Education',
+            'Entertainment',
+            'Fashion',
+            'Sports',
+            'Science',
+            'Art & Culture',
+            'Personal Development',
+            'Parenting',
+            'News & Politics',
+            'Music',
+            'Gaming',
+            'Environment',
+            'Self-Improvement',
+            'Books & Literature',
+            'Relationships',
+            'History',
+            'Photography',
+            'Tech Reviews',
+            'Productivity',
+            'DIY (Do It Yourself)',
+            'Social Media',
+            'Mental Health',
+            'Philosophy',
+            'Pets'
+          ],
         required:true
     },
     featuredImage:{
@@ -33,10 +65,10 @@ const blogSchema=new Schema({
     likes:{
         type:[{type:Schema.Types.ObjectId,ref:"Like"}],
     },
-    comments:{
+    comments:[{
         type:Schema.Types.ObjectId,
         ref:"Comment"
-    }
+    }] 
 },{
     timestamps:true
 })
