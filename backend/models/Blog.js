@@ -17,7 +17,7 @@ const blogSchema=new Schema({
     author:{
         type:Schema.Types.ObjectId,
         ref:"User",
-        // required:true
+        required:true
     },
     categories:{
         type:String,
@@ -63,7 +63,7 @@ const blogSchema=new Schema({
         default:0
     },
     likes:{
-        type:[{type:Schema.Types.ObjectId,ref:"Like"}],
+        type:[{type:Schema.Types.ObjectId,ref:"User"}],
     },
     comments:[{
         type:Schema.Types.ObjectId,

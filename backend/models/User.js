@@ -14,7 +14,8 @@ const userSchema=new Schema({
     role:{
         type:String,
         enum:['user','admin','author'],
-        default:'user'
+        default:'user',
+        select:false
     },
     photo:{
         type:String,
@@ -22,7 +23,8 @@ const userSchema=new Schema({
     },
     password:{
         type:String,
-        required:true
+        required:true,
+        select:false
     },
     confirmPassword:{
         type:String,

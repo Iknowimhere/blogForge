@@ -21,7 +21,7 @@ export const auth = asyncHandler(async (req, res, next) => {
 export const checkRole = (...roles) => {
   return asyncHandler(async (req, res, next) => {
     //find the user
-    const user = await User.findById(req.userId);
+    const user = await User.findById(req.userId).select("+role");
     if (!user) {
       res.status(404);
       throw new Error("User not found");

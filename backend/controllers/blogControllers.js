@@ -5,10 +5,17 @@ import asyncHandler from "express-async-handler";
 //@route    /api/blog
 //@access   Private
 export const postBlog=asyncHandler(async(req,res,next)=>{
-    let {title,content,}=req.body;
+    let {title,content,categories}=req.body;
+
+    if(!title || !content || !categories){
+        res.status(400);
+        throw new Error("Title,content and Categories are required!!");
+    }
     let newBlog=await Blog.create({
             title,
             content,
+            categories,
+            author:req?.userId,
             featuredImage:req.file?.path
     })
     res.status(201).json(newBlog);
@@ -18,7 +25,7 @@ export const postBlog=asyncHandler(async(req,res,next)=>{
 //@route    /api/blog
 //@access   Public
 export const getBlogs=asyncHandler(async(req,res)=>{
-    let blogs=await Blog.find()
+    let blogs=await Blog.find();
     res.status(200).json(blogs)
 })
 
@@ -28,6 +35,9 @@ export const getBlogs=asyncHandler(async(req,res)=>{
 export const getBlog=asyncHandler(async(req,res)=>{
     let {slug}=req.params;
     let blog=await Blog.findOne({slug})
+    //update a view
+    blog.views+=1;
+    await blog.save()
     res.status(200).json(blog)
 })
 
@@ -61,4 +71,27 @@ export const deleteBlog=asyncHandler(async(req,res)=>{
     let {slug}=req.params;
     await Blog.findOneAndDelete({slug})
     res.sendStatus(204);
+})
+
+//@desc   Toggle a Like
+//@route  /api/blog/:slug/like
+//access  Private
+
+export const ToggleLikeBlog=asyncHandler(async(req,res)=>{
+    let {slug}=req.params;
+
+    let blog=await Blog.findOne({slug});
+
+    let userIndex=blog.likes.findIndex((doc)=>{
+        return doc.toString()===req.userId.toString()
+    })
+
+    if(userIndex===-1){
+        blog.likes.push(req.userId)
+    }else{
+        blog.likes.splice(userIndex,1);
+    }
+    await blog.save();
+
+    res.sendStatus(200);
 })
