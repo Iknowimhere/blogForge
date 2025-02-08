@@ -75,8 +75,7 @@ export const deleteBlog=asyncHandler(async(req,res)=>{
 
 //@desc   Toggle a Like
 //@route  /api/blog/:slug/like
-//access  Private
-
+//access  PrivateQ!`
 export const ToggleLikeBlog=asyncHandler(async(req,res)=>{
     let {slug}=req.params;
 
