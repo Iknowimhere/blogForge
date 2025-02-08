@@ -40,7 +40,7 @@ export const getComments=asyncHandler(async(req,res)=>{
         req.status(404);
         throw new Error("Blog not found!")
     }
-   let comments=await Comment.find({blog:blog._id}).populate("user","username email photo -_id");
-   
+   let comments=await Comment.find({blog:blog._id}).sort("-createdAt").populate("user","username email photo -_id");
+
     res.status(200).json(comments);
 });
