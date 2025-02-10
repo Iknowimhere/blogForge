@@ -166,13 +166,6 @@ export const resetPassword=asyncHandler(async(req,res,next)=>{
 
 
 export const logout=asyncHandler(async(req,res)=>{
-    let userId=req.userId;
-
-    let user=await User.findById(userId);
-    if(!user){
-        res.status(401);
-        throw new Error("User is not logged in!")
-    }
     req.userId=null;
     res.sendStatus(200)
 })

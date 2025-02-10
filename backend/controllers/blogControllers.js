@@ -25,13 +25,9 @@ export const postBlog=asyncHandler(async(req,res,next)=>{
 //@route    /api/blog
 //@access   Public
 export const getBlogs=asyncHandler(async(req,res)=>{
-    let categories=req.query.categories
+   let query={};
+   req.query.categories?query.categories:query={}
 
-    //filter
-    let query={};
-    if(categories){
-        query.categories=categories;
-    }
 
     //pagination
     let page=req.query.page || 1;
