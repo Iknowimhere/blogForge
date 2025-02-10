@@ -25,8 +25,27 @@ export const postBlog=asyncHandler(async(req,res,next)=>{
 //@route    /api/blog
 //@access   Public
 export const getBlogs=asyncHandler(async(req,res)=>{
-    let blogs=await Blog.find();
-    res.status(200).json(blogs)
+    let categories=req.query.categories
+
+    //filter
+    let query={};
+    if(categories){
+        query.categories=categories;
+    }
+
+    //pagination
+    let page=req.query.page || 1;
+    let limit=req.query.limit || 3;
+    let skip=(page-1)*limit;
+    let totalBlogs=await Blog.countDocuments();
+
+    let blogs=await Blog.find(query).populate("author","username photo email -_id").sort("-createdAt").skip(skip).limit(limit);
+    res.status(200).json({
+        currentPage:page,
+        totalBlogs,
+        pages:Math.ceil(totalBlogs/limit),
+        blogs
+    })
 })
 
 //@desc     Get a Blog

@@ -45,7 +45,7 @@ export const login = asyncHandler(async (req, res, next) => {
         //token
         let token=await generateToken(existingUser._id)
         //sending response
-        res.status(201).json({username:existingUser.username,photo:existingUser.photo,email:existingUser.email,token});
+        res.status(200).json({username:existingUser.username,photo:existingUser.photo,email:existingUser.email,token});
 })
 
 export const updateProfile=asyncHandler(async(req,res,next)=>{
@@ -163,3 +163,16 @@ export const resetPassword=asyncHandler(async(req,res,next)=>{
     await user.save({validateBeforeSave:false})
     res.status(200).send("Password reset successfully!!")
 }) 
+
+
+export const logout=asyncHandler(async(req,res)=>{
+    let userId=req.userId;
+
+    let user=await User.findById(userId);
+    if(!user){
+        res.status(401);
+        throw new Error("User is not logged in!")
+    }
+    req.userId=null;
+    res.sendStatus(200)
+})
