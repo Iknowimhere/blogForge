@@ -2,23 +2,31 @@ import express from "express";
 import db from "./config/db.js";
 import userRoutes from "./routes/userRoutes.js";
 import blogRoutes from "./routes/blogRoutes.js";
+import {rateLimit} from 'express-rate-limit'
+import helmet from 'helmet';
+import cors from 'cors';
+import { errorMiddleware } from "./middlewares/errorMiddleware.js";
 db();
 let app = express();
 
+let limiter=rateLimit({
+  windowMs:15*60*1000,
+  limit:100,
+  standardHeaders:'draft-8',
+  legacyHeaders:false
+})
+
+app.use(cors())
+app.use(helmet());
+app.use(limiter)
+
 app.use(express.json());
+
 
 app.use("/api/user", userRoutes);
 app.use("/api/blog", blogRoutes);
 
 //global error handler
-app.use((err, req, res, next) => {
-  let statusCode = err.statusCode || 500;
-  let message = err.message || "Something went wrong!!Please try again Later";
-  return res.status(statusCode).json({
-    status: "Failure",
-    message,
-    stack: process.env.NODE_ENV === "production" ? undefined : err.stack,
-  });
-});
+app.use(errorMiddleware);
 
 export default app;

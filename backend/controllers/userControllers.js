@@ -7,11 +7,7 @@ import { send } from '../utils/send.js';
 
 export const register =asyncHandler( async (req, res, next) => {
     let { username, email, password, confirmPassword } = req.body;
-        //verify user is in db already
-        let existingUser=await User.findOne({email})
-        if(existingUser){
-           throw new Error("User already exists,Please Login")
-        }
+
         // creating a new user
         let newUser = await User.create({
             username,
@@ -33,7 +29,6 @@ export const login = asyncHandler(async (req, res, next) => {
         //verify user is in db already
         let existingUser=await User.findOne({email}).select("+password")
         
-        
         if(!existingUser){
             throw new Error("User doesnt exist,Please Register")
         }
@@ -45,7 +40,7 @@ export const login = asyncHandler(async (req, res, next) => {
         //token
         let token=await generateToken(existingUser._id)
         //sending response
-        res.status(201).json({username:existingUser.username,photo:existingUser.photo,email:existingUser.email,token});
+        res.status(200).json({username:existingUser.username,photo:existingUser.photo,email:existingUser.email,token});
 })
 
 export const updateProfile=asyncHandler(async(req,res,next)=>{
@@ -163,3 +158,9 @@ export const resetPassword=asyncHandler(async(req,res,next)=>{
     await user.save({validateBeforeSave:false})
     res.status(200).send("Password reset successfully!!")
 }) 
+
+
+export const logout=asyncHandler(async(req,res)=>{
+    req.userId=null;
+    res.sendStatus(200)
+})

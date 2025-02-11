@@ -24,22 +24,24 @@ export const postBlog = asyncHandler(async (req, res, next) => {
 //@desc     Get Blogs
 //@route    /api/blog
 //@access   Public
-export const getBlogs = asyncHandler(async (req, res) => {
-    //get all blogs
-    let categories = req.query.categories;
-    let query = {};
-    if (categories) {
-        query.categories = categories;
-    }
+export const getBlogs=asyncHandler(async(req,res)=>{
+   let query={};
+   req.query.categories?query.categories:query={}
+
 
     //pagination
-    let page = parseInt(req.query.page) || 1;
-    let limit = parseInt(req.query.limit) || 3;
-    let skip = (page - 1) * limit;
+    let page=req.query.page || 1;
+    let limit=req.query.limit || 3;
+    let skip=(page-1)*limit;
+    let totalBlogs=await Blog.countDocuments();
 
-    let totalBlogs = await Blog.countDocuments(query);
-    let blogs = await Blog.find(query).populate("author", "username email -_id").sort({ createdAt: -1 }).skip(skip).limit(limit);
-    res.status(200).json({ blogs, current: page, pages: Math.ceil(totalBlogs / limit), totalBlogs });
+    let blogs=await Blog.find(query).populate("author","username photo email -_id").sort("-createdAt").skip(skip).limit(limit);
+    res.status(200).json({
+        currentPage:page,
+        totalBlogs,
+        pages:Math.ceil(totalBlogs/limit),
+        blogs
+    })
 })
 
 //@desc     Get a Blog
