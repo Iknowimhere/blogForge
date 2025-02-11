@@ -7,11 +7,7 @@ import { send } from '../utils/send.js';
 
 export const register =asyncHandler( async (req, res, next) => {
     let { username, email, password, confirmPassword } = req.body;
-        //verify user is in db already
-        let existingUser=await User.findOne({email})
-        if(existingUser){
-           throw new Error("User already exists,Please Login")
-        }
+
         // creating a new user
         let newUser = await User.create({
             username,
@@ -32,7 +28,6 @@ export const login = asyncHandler(async (req, res, next) => {
     let {  email, password} = req.body;
         //verify user is in db already
         let existingUser=await User.findOne({email}).select("+password")
-        
         
         if(!existingUser){
             throw new Error("User doesnt exist,Please Register")
