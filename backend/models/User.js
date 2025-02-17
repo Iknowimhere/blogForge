@@ -15,8 +15,7 @@ const userSchema=new Schema({
     role:{
         type:String,
         enum:['user','admin','author'],
-        default:'user',
-        select:false
+        default:'user'
     },
     photo:{
         type:String,

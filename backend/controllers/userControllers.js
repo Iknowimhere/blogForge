@@ -25,23 +25,28 @@ export const register =asyncHandler( async (req, res, next) => {
 })
 
 export const login = asyncHandler(async (req, res, next) => {
-    let {  email, password} = req.body;
-        //verify user is in db already
-        let existingUser=await User.findOne({email}).select("+password")
-        
-        if(!existingUser){
-            throw new Error("User doesnt exist,Please Register")
-        }
-        //verify password
-        let result=await existingUser.verifyPassword(password,existingUser.password)
-        if(!result){
-            throw new Error("Password is not correct")
-        }
-        //token
-        let token=await generateToken(existingUser._id)
-        //sending response
-        res.status(200).json({username:existingUser.username,photo:existingUser.photo,email:existingUser.email,token});
-})
+    let { email, password } = req.body;
+    let existingUser = await User.findOne({email}).select("+password +role");
+    
+    if(!existingUser){
+        throw new Error("User doesnt exist,Please Register");
+    }
+    
+    let result = await existingUser.verifyPassword(password, existingUser.password);
+    if(!result){
+        throw new Error("Password is not correct");
+    }
+    
+    let token = await generateToken(existingUser._id);
+    
+    res.status(200).json({
+        username: existingUser.username,
+        photo: existingUser.photo,
+        email: existingUser.email,
+        role: existingUser.role,
+        token
+    });
+});
 
 export const updateProfile=asyncHandler(async(req,res,next)=>{
     let {id}=req.params;
@@ -164,3 +169,18 @@ export const logout=asyncHandler(async(req,res)=>{
     req.userId=null;
     res.sendStatus(200)
 })
+
+
+export const getAllUsers = asyncHandler(async (req, res) => {
+    const users = await User.find().select('-password');
+    res.status(200).json(users);
+  });
+  
+  export const deleteUser = asyncHandler(async (req, res) => {
+    const user = await User.findByIdAndDelete(req.params.id);
+    if (!user) {
+      res.status(404);
+      throw new Error('User not found');
+    }
+    res.status(200).json({ message: 'User deleted successfully' });
+  });

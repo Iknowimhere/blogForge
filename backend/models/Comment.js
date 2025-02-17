@@ -15,6 +15,6 @@ const commentSchema=new Schema({
         ref:"Blog",
         required:true
     }
-})
+},{timestamps:true})
 
 export default model("Comment",commentSchema);

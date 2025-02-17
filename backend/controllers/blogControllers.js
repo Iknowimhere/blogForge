@@ -49,7 +49,7 @@ export const getBlogs=asyncHandler(async(req,res)=>{
 //@access   Public
 export const getBlog = asyncHandler(async (req, res) => {
     let { slug } = req.params;
-    let blog = await Blog.findOne({ slug })
+    let blog = await Blog.findOne({ slug }).populate("author","photo email username").populate("comments","user")
     //update a view
     blog.views += 1;
     await blog.save()

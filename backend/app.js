@@ -6,6 +6,7 @@ import {rateLimit} from 'express-rate-limit'
 import helmet from 'helmet';
 import cors from 'cors';
 import { errorMiddleware } from "./middlewares/errorMiddleware.js";
+import categoryRouter from "./routes/categoryRoutes.js";
 db();
 let app = express();
 
@@ -25,6 +26,7 @@ app.use(express.json());
 
 app.use("/api/user", userRoutes);
 app.use("/api/blog", blogRoutes);
+app.use("/api/category",categoryRouter)
 
 //global error handler
 app.use(errorMiddleware);
